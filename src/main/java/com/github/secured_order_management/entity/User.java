@@ -26,6 +26,10 @@ public class User {
     private Long id;
 
     @NotBlank
+    @Column(name = "username", nullable = false, columnDefinition = "text")
+    private String username;
+
+    @NotBlank
     @Column(name = "name", nullable = false, columnDefinition = "text")
     private String name;
 

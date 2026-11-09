@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class UserService {
@@ -30,6 +31,7 @@ public class UserService {
     @Transactional
     public UserResponse registerUser(CreateUserRequest request) {
         User user = new User();
+        user.setUsername(request.username().trim().toLowerCase(Locale.ROOT));
         user.setName(request.name().trim());
         user.setRole(request.role());
         user.setPassword(passwordEncoder.encode(request.password()));

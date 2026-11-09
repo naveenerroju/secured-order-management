@@ -23,12 +23,12 @@ import jakarta.validation.Validator;
 
 class UserServiceTest {
     @Test
-    void registrationValidationRejectsAdminRole() {
+    void registrationValidationRejectsBlankCredentials() {
         try (var factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
 
             assertFalse(validator.validate(
-                    new CreateUserRequest("Sam", Role.ADMIN, "correct-horse-battery")
+                    new CreateUserRequest("", "Sam", "", null)
             ).isEmpty());
         }
     }
@@ -47,12 +47,18 @@ class UserServiceTest {
         });
 
         UserResponse response = userService.registerUser(
-                new CreateUserRequest("  Sam  ", Role.CUSTOMER, "correct-horse-battery")
+                new CreateUserRequest(
+                        "  sammy  ",
+                        "  Sam Smith  ",
+                        "correct-horse-battery",
+                        Role.SELLER
+                )
         );
 
         assertEquals(1L, response.id());
-        assertEquals("Sam", response.name());
-        assertEquals(Role.CUSTOMER, response.role());
+        assertEquals("sammy", response.username());
+        assertEquals("Sam Smith", response.name());
+        assertEquals(Role.SELLER, response.role());
         assertFalse(response.toString().contains("correct-horse-battery"));
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
